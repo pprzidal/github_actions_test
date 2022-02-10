@@ -63,8 +63,20 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+      # src (for example, change user/origanization and repo name for a repo you are allowed to access the settings): https://github.com/pprzidal/github_actions_test/settings/actions/runners/new
+      # Create a folder
+      mkdir actions-runner && cd actions-runner
+      # Download the latest runner package
+      curl -o actions-runner-linux-x64-2.287.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.287.1/actions-runner-linux-x64-2.287.1.tar.gz
+      # Optional: Validate the hash
+      echo "8fa64384d6fdb764797503cf9885e01273179079cf837bfc2b298b1a8fd01d52  actions-runner-linux-x64-2.287.1.tar.gz" | shasum -a 256 -c
+      # Extract the installer
+      tar xzf ./actions-runner-linux-x64-2.287.1.tar.gz
+      # Create the runner and start the configuration experience
+      ./config.sh --url https://github.com/pprzidal/github_actions_test --token YOUR-TOKEN
+      # Last step, run it!
+      sudo touch /etc/systemd/system/runner.service
+      echo ""
+  SHELL
 end

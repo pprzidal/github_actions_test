@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "pkg -t node16-win-x64 -o ./build/my_server ./server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +14,8 @@
   "dependencies": {
     "express": "^4.17.2",
     "wait-on": "^6.0.0"
+  },
+  "devDependencies": {
+    "pkg": "^5.5.2"
   }
 }
