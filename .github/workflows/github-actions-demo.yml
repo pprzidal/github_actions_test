@@ -13,18 +13,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install dependencies # This would actually build your project, using zip for an example artifact
+      - name: Install node # This would actually build your project, using zip for an example artifact
         uses: actions/setup-node@v2
         with:
           node-version: '16'
         #run: cd nodejsBackend
+      - name: Install dependencies 
         run: npm ci
       - name: Audit dependencies
         run: npm audit --audit-level=moderate
       - name: Test
         run: npm test
       - name: Build
-        run: npm run build
+        run: npm run build --if-present
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -42,6 +43,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./my-artifact.zip
-          asset_name: my-artifact.zip
-          asset_content_type: application/zip
+          asset_path: ./build/my_server.exe
+          asset_name: my-server.exe
+          asset_content_type: application/x-dosexec
