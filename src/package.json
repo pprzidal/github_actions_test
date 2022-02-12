@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "start": "node server.js",
-    "build": "pkg -t node16-win-x64 -o ./build/my_server ./server.js"
+    "build": "pkg -t node16-win-x64 -o ./build/my_server.exe ./server.js"
   },
   "keywords": [],
   "author": "",
