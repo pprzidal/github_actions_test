@@ -9,24 +9,28 @@ name: Visu3D Backend CI
 jobs:
   build:
     name: Upload Release Asset
-    runs-on: ubuntu-latest
+    runs-on: windows-latest # Windows Server 2019. Weil der Idefix ja auch ein Windows rechner ist
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install node # This would actually build your project, using zip for an example artifact
+      - name: Install node
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-        #run: cd nodejsBackend
       - name: Install dependencies 
+        working-directory: ./src # TODO nicht gut ändern!!, src: https://stackoverflow.com/questions/58139175/running-actions-in-another-directory
         run: npm ci
-      - name: Audit dependencies
+      - name: Audit dependencies # TODO ab welchem level soll der Test failen. Zur Auswahl stehen: null, info, low, moderate, high, critical, none
+        working-directory: ./src
         run: npm audit --audit-level=moderate
       - name: Test
+        working-directory: ./src
         run: npm test
       - name: Build
+        working-directory: ./src
         run: npm run build --if-present
       - name: Create Release
+        working-directory: ./src
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -37,12 +41,13 @@ jobs:
           draft: false
           prerelease: false
       - name: Upload Release Asset
+        working-directory: ./src
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./build/my_server.exe
+          asset_path: ./build/my-server.exe
           asset_name: my-server.exe
           asset_content_type: application/x-dosexec
